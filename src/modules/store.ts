@@ -1,9 +1,8 @@
-import { applyMiddleware, createStore } from 'redux'
+import { applyMiddleware, createStore, compose } from 'redux'
 import rootReducer, { initialState } from '.'
 
 import { IAppState } from '../types'
-import thunk, { ThunkMiddleware } from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { thunk } from 'redux-thunk'
 
 export const state: IAppState = {
   ...initialState,
@@ -16,13 +15,18 @@ export const state: IAppState = {
   delivery: Object.assign({}, initialState.delivery)
 }
 
-const middlewares = [thunk as ThunkMiddleware<IAppState>]
+const middlewares = [thunk]
+
+// Redux DevTools 확장 프로그램 연결
+const composeEnhancers = 
+  (typeof window !== 'undefined' && 
+   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
 
 const configureStore = () =>
   createStore(
     rootReducer,
-    state,
-    composeWithDevTools(applyMiddleware(...middlewares))
+    undefined,
+    composeEnhancers(applyMiddleware(...middlewares))
   )
 
 export default configureStore
